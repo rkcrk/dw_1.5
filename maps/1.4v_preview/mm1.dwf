@@ -1,0 +1,39 @@
+H -45,45,90,30
+H 45,75,60,30
+H 105,105,60,30
+H -105,75,60,30
+H -165,105,60,30
+H 165,135,60,30
+H 225,135,60,30
+H 165,135,15,30
+H 285,135,60,30
+H 285,135,15,30
+H 345,135,60,30
+H 345,135,15,30
+H 225,45,120,30
+H 195,165,30,135
+H 285,165,30,225
+H 195,390,120,30
+H 270,0,15,0
+H -180,360,405,30
+H 30,270,30,90
+H -180,270,375,30
+H -270,270,90,30
+H -270,300,30,450
+H -180,390,30,330
+L 345,45,30,90,maps\1.4v_preview\mm1.dwf
+L -240,450,60,30,maps\1.4v_preview\mm2.dwf
+T 0,0,255,0,255,hello world
+T 105,0,0,0,0,This is a Dwarf v1.4 engine test.
+T 75,315,0,0,0,The v1.4 includes level teleports,
+T -225,315,0,0,0,images and triggers.
+R 225,75,75,60,0
+R 0,300,90,60,1
+S maps/1.4v_preview/mm1s.py
+.IP 150,45
+.ICP 150,45
+.A AUTHOR
+.T DLE _Standalone Map
+.D A map made in the Dwarf Level Editor _Standalone program
+.F 196,196,255
+.DV 1.4
