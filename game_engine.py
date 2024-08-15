@@ -24,7 +24,7 @@ except ValueError:
 else:
     tb = "No error"
 finally:
-    #print tb
+    ##print tb
     """
 import os
 
@@ -70,13 +70,13 @@ class InputField:
         if self.fields[iid]["active"]:
             self.fields[iid]["input"] += s
         else:
-            pass  # print(f"tried to add a char to non-active field, see {self.fields[iid]}",1)
+            pass  # #print(f"tried to add a char to non-active field, see {self.fields[iid]}",1)
 
     def delChrFromField(self, iid: int):
         if self.fields[iid]["active"]:
             self.fields[iid]["input"] = self.fields[iid]["input"][:-1]
         else:
-            pass  # print(f"tried to del a char to non-active field, see {self.fields[iid]}",1)
+            pass  # #print(f"tried to del a char to non-active field, see {self.fields[iid]}",1)
 
     def getInputFromField(self, iid: int):
         return self.fields[iid]["input"]
@@ -106,8 +106,8 @@ running = True
 
 cursor = pygame.image.load("engine/decals/dwarf_cursor.png")
 
-# print("@ipebyx и @prostopelmenhto представляют")
-# print(f"БЕГИ ЗА АНАНАСОМ!, v{strv}")
+# #print("@ipebyx и @prostopelmenhto представляют")
+# #print(f"БЕГИ ЗА АНАНАСОМ!, v{strv}")
 name = "Беги за ананасом!"
 pygame.display.set_caption(name)
 pygame.display.set_icon(pygame.image.load("engine/decals/dwarf_missing.png"))
@@ -116,6 +116,7 @@ creatorMode = False
 
 modesforreal = ["decal", "hitbox", "leveltrigger"]
 modesforcounter = 1
+zimagelayer = {}
 modes = "hitbox"
 
 
@@ -124,6 +125,8 @@ def resetgamestates():
     mc = []
     global debugRectInfo
     debugRectInfo = []
+    global zimagelayer
+    zimagelayer = {}
     global text
     text = []
     global triggers
@@ -170,7 +173,7 @@ def ImageInit(silent=True):
     global textures
 
     for dec in decals:
-        # print(dec)
+        # #print(dec)
         try:
             image = pygame.image.load(dec[0])
         except:
@@ -178,7 +181,7 @@ def ImageInit(silent=True):
                 CEMB(
                     f'ТЕКСТУРА "{dec[0]}" НЕ НАЙДЕНА /\nTEXTURE "{dec[0]}" IS NOT FOUND'
                 )
-            # print(f'ТЕКСТУРА "{dec[0]}" НЕ НАЙДЕНА')
+            # #print(f'ТЕКСТУРА "{dec[0]}" НЕ НАЙДЕНА')
             # raise FileNotFoundError(f'ТЕКСТУРА "{dec[0]}" НЕ НАЙДЕНА')
             image = pygame.image.load("engine/decals/dwarf_missing.png")
         image = image.convert_alpha()
@@ -193,7 +196,7 @@ def ImageInit(silent=True):
                 "name": dec[0],
             }
         )
-        ##print({"image":image,"transparency":transparency,"position":position,"name":dec[0]})
+        ###print({"image":image,"transparency":transparency,"position":position,"name":dec[0]})
         # link, [posx, posy], transparency
 
 
@@ -211,6 +214,7 @@ def load_level(file):
     global linking
     global campos
     global plrspwn
+    global zimagelayer
     global camsp
     global fillercolor
     global author
@@ -234,12 +238,13 @@ def load_level(file):
     script = []
     text = []
     triggers = []
-
+    zimagelayer = {}
     hitboxes = []
     images = []
     decals = []
     linking = []
     campos = [0, 0]
+    decalcounter=0
     for line in m:
 
         sl = line.split(" ", 1)
@@ -247,46 +252,63 @@ def load_level(file):
         if sl[0] == ".IP":
             x, y = list(map(int, sl[1].split(",")))
             debilcoords = [x, y]
-            # print(f'player spawn at {x=},{y=}')
-            # print(debilcoords)
+            # #print(f'player spawn at {x=},{y=}')
+            # #print(debilcoords)
         if sl[0] == ".ICP":
             x, y = list(map(int, sl[1].split(",")))
             cameraposition = [x, y]
-            # print(f'camera spawn at {x=},{y=}')
+            # #print(f'camera spawn at {x=},{y=}')
         if sl[0] == ".A":
             st = sl[1].split(",")[-1].strip()
             author = st
-            # print(f'author: {st}')
+            # #print(f'author: {st}')
         if sl[0] == ".T":
             st = sl[1].split(",")[-1].strip()
             title = st
-            # print(f'title: {st}')
+            # #print(f'title: {st}')
         if sl[0] == ".F":
             r, g, b = list(map(int, sl[1].split(",")))
             fillercolor = (r, g, b)
-            # print(f'filler color: {r=},{g=},{b=}')
+            # #print(f'filler color: {r=},{g=},{b=}')
         if sl[0] == ".DV":
             st = sl[1].split(",")[-1].strip()
-            # print(f'version: {st}')
+            # #print(f'version: {st}')
             ver = st
         if sl[0] == "H":
             x, y, w, h = list(map(int, sl[1].split(",")))
-            # print(f'hitbox at {x=},{y=} with {w=},{h=}')
+            # #print(f'hitbox at {x=},{y=} with {w=},{h=}')
             platformo.append(pygame.Rect(x, y, w, h))
         if sl[0] == "L":
             x, y, w, h = list(map(int, sl[1].split(",")[0:4]))
             l = sl[1].split(",")[4].strip()
-            # print(f'linking hitbox at {x=},{y=} with {w=},{h=} linking to {l=}')
+            # #print(f'linking hitbox at {x=},{y=} with {w=},{h=} linking to {l=}')
             linking.append([pygame.Rect(x, y, w, h), l])
         if sl[0] == "I":
+
             x, y, l, t = (
-                int(sl[1].split(",")[0]),
-                int(sl[1].split(",")[1]),
-                sl[1].split(",")[2].strip(),
-                int(sl[1].split(",")[3]),
+                int(sh.split(",")[0]),
+                int(sh.split(",")[1]),
+                sh.split(",")[2].strip(),
+                int(sh.split(",")[3]),
             )
-            # print(f'image at {x=},{y=} linking to {l} w/ transparency {t}')
-            # link, [posx, posy], transparency
+
+            try:
+                z=int(sh.split(",")[4].strip())
+                try:
+                    #print(zimagelayer)
+                    zimagelayer[z].append(decalcounter)
+                except Exception as asdasdasd:
+                    zimagelayer[z]=[decalcounter]
+                #print(f'found image w/ z layer technology, {z=}')
+            except IndexError as r:
+                #print(f'{r}\n---\nplease keep in mind that THIS decal will show behind every decal with Z layer eg. z layer =-99\nEOE---')
+                try:
+                    zimagelayer[-99].append(decalcounter)
+                except:
+                    zimagelayer[-99]=[decalcounter]
+                
+            #print(f"image at {x=},{y=} linking to {l} w/ transparency {t}")
+            decalcounter+=1
             decals.append([l, [x, y], t])
         if sl[0] == "T":
 
@@ -301,18 +323,18 @@ def load_level(file):
             text.append([x, y, r, g, b, t])
         if sl[0] == "R":
 
-            print(list(map(int, sh.split(",")[:-1])))
-            print(int(sh.split(",")[-1]))
+            #print(list(map(int, sh.split(",")[:-1])))
+            #print(int(sh.split(",")[-1]))
             id = int(sh.split(",")[-1])
             x, y, w, h = list(map(int, sh.split(",")[:-1]))
             triggers.append([x, y, w, h, id])
-            print(f"trigger at {x=},{y=} with {w=},{h=} w/ {id=}")
+            #print(f"trigger at {x=},{y=} with {w=},{h=} w/ {id=}")
         if sl[0] == "S":
             script.append(sh.strip())
 
-            print(f"script w/ name {sh.strip()}")
+            #print(f"script w/ name {sh.strip()}")
     ImageInit()
-    print()
+    #print()
 
 
 def displaytext(text, pos, transparency=255, color=(0, 0, 1)):  ## DEBUGG
@@ -347,7 +369,7 @@ for m in n:
         else:
             versions[m] = f"{strv} | {title} by {author[0:10].replace('unknown','???')}"
     except Exception as e:
-        # print(e)
+        # #print(e)
         versions[m] = "FAIL"
 
 import datetime
@@ -366,7 +388,7 @@ import shutil
 
 def check_things():
     CHECKINGDIR = True
-    # print(commands.fields)
+    # #print(commands.fields)
     while CHECKINGDIR:
         clock.tick()
         for event in pygame.event.get():
@@ -502,7 +524,7 @@ def check_things():
 commands.addField(pygame.Rect(10, 550 - FONT_SIZE * 3, 400, 32), 1)
 
 
-# print(platformo)
+# #print(platformo)
 def DebugCircle(pos, r):
     if creatorMode:
         pygame.draw.circle(
@@ -514,7 +536,7 @@ def DebugCircle(pos, r):
 
 
 def DebuggerConsole():
-    # print('Dwarf Engine, made by @ipebyx & @prostopelmenhto')
+    # #print('Dwarf Engine, made by @ipebyx & @prostopelmenhto')
     while True:
         f = input("in  >>> ")
         k = None
@@ -525,8 +547,8 @@ def DebuggerConsole():
                 k = exec(f)
         except Exception as e:
             pass
-            # print('err <<<', e)
-        # print("out <<<",k)
+            # #print('err <<<', e)
+        # #print("out <<<",k)
 
 
 # Thread(target=DebuggerConsole).start()
@@ -598,7 +620,7 @@ def physicscheck():
             )
             if remove:
                 platformo.remove(k)
-                # print(platformo)
+                # #print(platformo)
                 break
         elif creatorMode:
             draw_rect_alpha(
@@ -636,7 +658,7 @@ def DRAWTRIGGERSPLEASE():
                 ),
             )
 
-        # print([debilcoords[0]+debilsize[0]/2,debilcoords[1]+debilsize[1]/2],rect)
+        # #print([debilcoords[0]+debilsize[0]/2,debilcoords[1]+debilsize[1]/2],rect)
         if rect.collidepoint(
             [debilcoords[0] + debilsize[0] / 2, debilcoords[1] + debilsize[1] / 2]
         ):
@@ -691,7 +713,29 @@ def getGlobalMouseCoords(withSnap):
 
 def displayTextures():
     disp = 0
-    # print(textures)
+    #print(textures)
+    for i in zimagelayer: 
+        #print(i)
+        #print(zimagelayer[i])
+        
+        for x in zimagelayer[i]:
+            ##print(images,x)
+            n=textures[x]
+            screen.blit(
+                n["image"], [n["position"][0] + cameraposition[0], n["position"][1] + cameraposition[1]]
+            )
+            #print(x)
+            """
+                displaytext(
+                    f'IMAGE SRC: {n["name"]}',
+                    [(n["position"][0] - campos[0]), (n["position"][1] - campos[1]-FONT_SIZE)],
+                    color=(127, 127, 127),
+                )
+                displaytext(
+                    f'Z LAYER: {i}',
+                    [(n["position"][0] - campos[0]), (n["position"][1] - campos[1]-FONT_SIZE*2)],
+                    color=(127, 127, 127),
+                )
     for l in textures:
 
         img = l["image"]
@@ -710,28 +754,10 @@ def displayTextures():
         )
         disp += 1
         mp = list(pygame.mouse.get_pos())
-        if reeeeeeeeeeect.collidepoint(mp) and creatorMode and modes == "decal":
-            draw_rect_alpha(screen, (0, 0, 255, 127), reeeeeeeeeeect)
-
-            if remove and removeDecals:
-                ##print(decals,textures)
-                for dec in decals:
-                    # print('dec',dec)
-                    # print('l',l)
-
-                    if dec[0] == l["name"] and dec[1] == l["position"]:
-                        decals.remove(dec)
-                        break
-                    # print(dec[0],l["name"])
-                    # print(l["position"],[imgrect.x,imgrect.y])
-                ##print(decals,textures)
-                textures.remove(l)
-                ##print(decals,textures)
         if reeeeeeeeeeect.collidepoint(mp):
             debugTexInfo.append(f"x:{rct[0]},y:{rct[1]},w:{imgrect.w},h:{imgrect.h}")
         elif creatorMode:
             draw_rect_alpha(screen, (127, 127, 255, 127), reeeeeeeeeeect)
-        """
         mp=list(pygame.mouse.get_pos())
         mp[0]-=cameraposition[0]
         mp[1]-=cameraposition[1]
@@ -742,7 +768,7 @@ def displayTextures():
         if k.collidepoint(mp) and creatorMode:
             
             pygame.draw.rect(screen,(196,196,196),pygame.Rect(pos.x,pos.y,k.w,k.h))
-            #print(f'hovering on {id(img)}, {img}')
+            ##print(f'hovering on {id(img)}, {img}')
             if remove:
                 textures.remove(l)"""
     return disp
@@ -755,9 +781,10 @@ holdingKeyLeft = False
 holdingKeyRight = False
 
 ImageInit()
-# print('wefwefwefw')
+#print(textures)
+# #print('wefwefwefw')
 
-# print(decals)
+# #print(decals)
 
 
 LM = check_things
@@ -772,7 +799,7 @@ def savelevel():
     f = open(fi, mode="w")
     f.write("{" + total + "}")
     f.close()
-    ###print(fi)
+    ####print(fi)
     mc = []
 
 
@@ -791,20 +818,20 @@ fi = lmap
 
 
 load_level(lmap)
-print(script)
-print(linking)
+#print(script)
+#print(linking)
 ImageInit()
-# print(decals)
+# #print(decals)
 
 # del commands.fields[2]
 
 if script:
     ab = script[0]
-    print(script)
+    #print(script)
     checking = open(ab.strip())
     chkr = checking.read()
 
-    print(chkr)
+    #print(chkr)
     platf = platformo
     playerpos = debilcoords
     playervel = debilspid
@@ -814,6 +841,24 @@ if script:
     init()
 
     checking.close()
+
+
+
+
+
+
+
+0.
+
+
+
+
+
+
+
+
+
+
 while (
     running
 ):  ############################################################################################################
@@ -838,7 +883,7 @@ while (
         DebugCircle([debilcoords[0], debilcoords[1] - 5], 5)
         DebugCircle([debilcoords[0] + debilsize[0], debilcoords[1] - 5], 5)
         k = displayTextures()
-        # print(f'displayed {k} textures')
+        # #print(f'displayed {k} textures')
         floorcheck()
         physicscheck()
         DRAWTRIGGERSPLEASE()
@@ -886,7 +931,10 @@ while (
             -debilcoords[1] + 240 - debilsize[1],
         ]
         camsomewhere.append(cameraposition)
-        if len(camsomewhere) > 60:
+
+        smoothness=72
+
+        if len(camsomewhere) > smoothness:
             del camsomewhere[0]
         sumcamx = 0
         sumcamy = 0
@@ -894,7 +942,10 @@ while (
             sumcamx += m[0]
         for m in camsomewhere:
             sumcamy += m[1]
-        cameraposition = [sumcamx / 60, sumcamy / 60]
+        cameraposition = [(sumcamx / smoothness),(sumcamy / smoothness)]
+
+
+        
         if debugCheckWallsOnLeft() and holdingKeyLeft:
             debilspid[0] = -7
         elif debugCheckWallsOnRight() and holdingKeyRight:
@@ -927,10 +978,10 @@ while (
                     scanh = abs(mc[1][1] - mc[0][1])
                     h = input("rederict to map? ")
                     levelplatformo.append([pygame.Rect([scanx, scany], [scanw, scanh]), h])
-                    ##print('trigger plac')
+                    ###print('trigger plac')
                     for j in levelplatformo:
                         if j.w == 0 and j.h == 0 or j.w == 0 or j.h == 0:
-                            ##print("null hitbox, deleting")
+                            ###print("null hitbox, deleting")
                             platformo.remove(j)
                     savelevel()
                 elif modes == "hitbox":
@@ -939,10 +990,10 @@ while (
                     scanw = abs(mc[1][0] - mc[0][0])
                     scanh = abs(mc[1][1] - mc[0][1])
                     platformo.append(pygame.Rect([scanx, scany], [scanw, scanh]))
-                    ##print('platform plac')
+                    ###print('platform plac')
                     for j in platformo:
                         if j.w == 0 and j.h == 0 or j.w == 0 or j.h == 0:
-                            ##print("null hitbox, deleting")
+                            ###print("null hitbox, deleting")
                             platformo.remove(j)
                     savelevel()
             if len(mc) == 1:
@@ -975,8 +1026,8 @@ while (
 
             displaytext(f"camera pos   : {list(map(round,cameraposition))}", [0, 0])
             displaytext(f"snap         : {SNAP}", [0, FONT_SIZE])
-            displaytext(f"FPS          : {round(a)}", [0, FONT_SIZE * 2])
-            displaytext(f"target FPS   : {round(FPS)}", [0, FONT_SIZE * 3])
+            displaytext(f"FPS          : {round(a,3)}", [0, FONT_SIZE * 2])
+            displaytext(f"target FPS   : {round(FPS,3)}", [0, FONT_SIZE * 3])
             # displaytext(f'del dec/hitb : {"deleting decals|textures"*removeDecals+"deleting hitboxes"*(1-removeDecals)}',[0,FONT_SIZE*4])
             displaytext(
                 f"player pos   : {list(map(round,debilcoords))}", [0, FONT_SIZE * 4]

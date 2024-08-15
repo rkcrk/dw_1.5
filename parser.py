@@ -27,7 +27,7 @@ linking = []
 text = []
 campos = [0, 0]
 
-print(os.path.dirname(os.path.abspath(__file__)))
+#print(os.path.dirname(os.path.abspath(__file__)))
 
 import pygame
 
@@ -62,7 +62,7 @@ def ImageInit(silent=True):
                     f'ТЕКСТУРА "{dec[2]}" НЕ НАЙДЕНА /\nTEXTURE "{dec[2]}" IS NOT FOUND'
                 )
                 raise FileNotFoundError(f"texture not found (context: {dec[2]})")
-            print(f'ТЕКСТУРА "{dec[2]}" НЕ НАЙДЕНА')
+            #print(f'ТЕКСТУРА "{dec[2]}" НЕ НАЙДЕНА')
 
             image = loadify("engine/decals/dwarf_missing.png")
         transparency = int(dec[3])
@@ -120,45 +120,46 @@ def parselevel(file):
     campos = [0, 0]
     for line in m:
         sl = line.split(" ", 1)
-        sh = sl[1]
+        try:sh = sl[1]
+        except:print('empty line')
         if sl[0] == ".IP":
             x, y = list(map(int, sh.split(",")))
             plrspwn = [x, y]
-            print(f"player spawn at {x=},{y=}")
+            #print(f"player spawn at {x=},{y=}")
         if sl[0] == ".ICP":
             x, y = list(map(int, sh.split(",")))
             camsp = [x, y]
-            print(f"camera spawn at {x=},{y=}")
+            #print(f"camera spawn at {x=},{y=}")
         if sl[0] == ".A":
             st = sh.split(",")[-1].strip()
             author = st
-            print(f"author: {st}")
+            #print(f"author: {st}")
         if sl[0] == ".T":
             st = sh.split(",")[-1].strip()
             title = st
-            print(f"title: {st}")
+            #print(f"title: {st}")
         if sl[0] == ".D":
             st = sh.split(",")[-1].strip()
             desc = st
-            print(f"description: {st}")
+            #print(f"description: {st}")
         if sl[0] == ".F":
             r, g, b = list(map(int, sh.split(",")))
             color = (r, g, b)
-            print(f"filler color: {r=},{g=},{b=}")
+            #print(f"filler color: {r=},{g=},{b=}")
         if sl[0] == ".DV":
             st = sh.split(",")[-1].strip()
-            print(f"version: {st}")
+            #print(f"version: {st}")
             ver = st
         if sl[0] == "H":
 
             x, y, w, h = list(map(int, sh.split(",")))
-            print(f"hitbox at {x=},{y=} with {w=},{h=}")
+            #print(f"hitbox at {x=},{y=} with {w=},{h=}")
             hitboxes.append([x, y, w, h])
         if sl[0] == "L":
 
             x, y, w, h = list(map(int, sh.split(",")[0:4]))
             l = sh.split(",")[4].strip()
-            print(f"linking hitbox at {x=},{y=} with {w=},{h=} linking to {l=}")
+            #print(f"linking hitbox at {x=},{y=} with {w=},{h=} linking to {l=}")
             linking.append([x, y, w, h, l])
         if sl[0] == "I":
 
@@ -175,15 +176,15 @@ def parselevel(file):
                     zimagelayer[z].append(decalcounter)
                 except:
                     zimagelayer[z]=[decalcounter]
-                print(f'found image w/ z layer technology, {z=}')
+                #print(f'found image w/ z layer technology, {z=}')
             except Exception as r:
-                print(f'{r}\n---\nplease keep in mind that THIS decal will show behind every decal with Z layer eg. z layer =-99')
+                #print(f'{r}\n---\nplease keep in mind that THIS decal will show behind every decal with Z layer eg. z layer =-99')
                 try:
                     zimagelayer[-99].append(decalcounter)
                 except:
                     zimagelayer[-99]=[decalcounter]
                 
-            print(f"image at {x=},{y=} linking to {l} w/ transparency {t}")
+            #print(f"image at {x=},{y=} linking to {l} w/ transparency {t}")
             decals.append([x, y, l, t])
             decalcounter+=1
         if sl[0] == "T":
@@ -199,16 +200,16 @@ def parselevel(file):
             text.append([x, y, r, g, b, t])
         if sl[0] == "R":
 
-            print(list(map(int, sh.split(",")[:-1])))
-            print(int(sh.split(",")[-1]))
+            #print(list(map(int, sh.split(",")[:-1])))
+            #print(int(sh.split(",")[-1]))
             id = int(sh.split(",")[-1])
             x, y, w, h = list(map(int, sh.split(",")[:-1]))
             triggers.append([x, y, w, h, id])
-            print(f"trigger at {x=},{y=} with {w=},{h=} w/ {id=}")
+            #print(f"trigger at {x=},{y=} with {w=},{h=} w/ {id=}")
         if sl[0] == "S":
 
             script.append(sh.strip())
-            print(f"script w/ name {sh.strip()}")
+            #print(f"script w/ name {sh.strip()}")
     zimagelayer= dict(sorted(zimagelayer.items()))
     ImageInit()
 
@@ -249,7 +250,7 @@ def draw_rect_alpha(surface, color, rect):
 
 def save(manual=False, name="temp.dwf"):
     global filename
-    print("save/export")
+    #print("save/export")
     h = "" 
     imgidx=0
     for i in hitboxes:
@@ -320,7 +321,7 @@ rightclickjobpos = [-7000, 0]
 ImageInit()
 
 
-print(zimagelayer)
+#print(zimagelayer)
 
 while running:
     for event in pygame.event.get():
@@ -340,7 +341,7 @@ while running:
                 (campos[0] + gp[0]) // SNAP * SNAP,
                 (campos[1] + gp[1]) // SNAP * SNAP,
             ]
-            print(f"click at global {tp}")
+            #print(f"click at global {tp}")
         if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[0]:
             gp = list(pygame.mouse.get_pos())
             mc.append(
@@ -357,13 +358,13 @@ while running:
             for n in hitboxes:
                 if pygame.Rect(n).collidepoint(tp):
                     hitboxes.remove(n)
-                    print("goodbye hb")
+                    #print("goodbye hb")
                     break
 
             for n in linking:
                 if pygame.Rect(n[0:4]).collidepoint(tp):
                     linking.remove(n)
-                    print("goodbye lb")
+                    #print("goodbye lb")
                     break
             for nj in images:
                 rct = nj["image"].get_rect()
@@ -376,7 +377,7 @@ while running:
 
                 if reeeeeeeeeeect.collidepoint(tp):
                     images.remove(nj)
-                    print("goodbye img")
+                    #print("goodbye img")
                     decals.remove(
                         [
                             reeeeeeeeeeect.x,
@@ -389,7 +390,7 @@ while running:
             for n in triggers:
                 if pygame.Rect(n[0:4]).collidepoint(tp):
                     linking.remove(n)
-                    print("goodbye tb")
+                    #print("goodbye tb")
                     break
         if event.type == pygame.MOUSEBUTTONDOWN and pygame.mouse.get_pressed()[2]:
             cp = pygame.mouse.get_pos()
@@ -400,27 +401,27 @@ while running:
             ]
         if event.type == pygame.MOUSEBUTTONDOWN:
             if pygame.Rect(0, -40 + skew, 40, 40).collidepoint(pygame.mouse.get_pos()):
-                print("hitbox")
+                #print("hitbox")
                 mode = "hb"
                 mc = []
             if pygame.Rect(40, -40 + skew, 40, 40).collidepoint(pygame.mouse.get_pos()):
-                print("link")
+                #print("link")
                 mode = "lb"
                 mc = []
             if pygame.Rect(80, -40 + skew, 40, 40).collidepoint(pygame.mouse.get_pos()):
-                print("trigger")
+                #print("trigger")
                 mode = "tb"
                 mc = []
             if pygame.Rect(120, -40 + skew, 40, 40).collidepoint(
                 pygame.mouse.get_pos()
             ):
-                print("text")
+                #print("text")
                 mode = "tx"
                 mc = []
             if pygame.Rect(160, -40 + skew, 40, 40).collidepoint(
                 pygame.mouse.get_pos()
             ):
-                print("delete")
+                #print("delete")
                 mode = "d"
                 mc = []
             if pygame.Rect(200, -40 + skew, 40, 40).collidepoint(
@@ -431,7 +432,7 @@ while running:
             if pygame.Rect(240, -40 + skew, 40, 40).collidepoint(
                 pygame.mouse.get_pos()
             ):
-                print("open")
+                #print("open")
                 filename = askopenfilename(title="Select the file you want to open")
                 if filename == "":
                     CEMB(
@@ -451,7 +452,7 @@ while running:
                 ).collidepoint(pygame.mouse.get_pos())
                 and rightclickjob
             ):
-                print("DELEEE")
+                #print("DELEEE")
                 tp = [
                     (rightclickjobpos[0] + campos[0]),
                     (rightclickjobpos[1] + campos[1]),
@@ -459,18 +460,18 @@ while running:
                 for n in hitboxes:
                     if pygame.Rect(n).collidepoint(tp):
                         hitboxes.remove(n)
-                        print("goodbye hb")
+                        #print("goodbye hb")
                         break
 
                 for n in linking:
                     if pygame.Rect(n[0:4]).collidepoint(tp):
                         linking.remove(n)
-                        print("goodbye lb")
+                        #print("goodbye lb")
                         break
                 for n in triggers:
                     if pygame.Rect(n[0:4]).collidepoint(tp):
                         triggers.remove(n)
-                        print("goodbye tb")
+                        #print("goodbye tb")
                         break
 
                 for nj in images:
@@ -481,14 +482,14 @@ while running:
                         rct.w,
                         rct.h,
                     )
-                    print(reeeeeeeeeeect)
+                    #print(reeeeeeeeeeect)
 
                     if reeeeeeeeeeect.collidepoint(tp):
                         i=Mbox('Select the image you want to delete',f'Info about image:\n{reeeeeeeeeeect.__repr__()}\n{nj["name"]=}',48 +1)
-                        print(i)
+                        #print(i)
                         if i==1:
                             images.remove(nj)
-                            print("goodbye img")
+                            #print("goodbye img")
                             decals.remove(
                                 [
                                     reeeeeeeeeeect.x,
@@ -525,7 +526,7 @@ while running:
                 ).collidepoint(pygame.mouse.get_pos())
                 and rightclickjob
             ):
-                print("create linkbox")
+                #print("create linkbox")
                 mc = []
 
                 mode = "lb"
@@ -543,20 +544,27 @@ while running:
                 ).collidepoint(pygame.mouse.get_pos())
                 and rightclickjob
             ):
-                print("create image")
+                #print("create image")
                 mode = "i"
                 f = askopenfilename(
                     title="Select an image (you cannot select the image outside the engine)"
                 )
+                i = eg.enterbox('Type in z-layer:')
+                try:
+                    i=int(i)
+                except:
+                    CEMB('The typed in value does NOT correspond to a convertable-type-to-int.')
+                    break
                 string1 = __file__
                 string2 = f.replace("/", "\\")
                 match = SequenceMatcher(None, string1, string2).find_longest_match()
-                n = string1[match.a : match.a + match.size]
-
+                #print(zimagelayer)
+                try:zimagelayer[i].append(len(decals))
+                except:zimagelayer[i]=[len(decals)]
+                zimagelayer= dict(sorted(zimagelayer.items()))
+                #print(zimagelayer)
                 try:
-                    s2 = string2.replace(string1[match.a : match.a + match.size], "")[
-                        1:
-                    ]
+                    s2 = string2.replace(string1[match.a : match.a + match.size], "")[1:]
                     decals.append(
                         [
                             (campos[0] + rightclickjobpos[0]) // SNAP * SNAP,
@@ -587,7 +595,7 @@ while running:
                     try:
                         ImageInit(False)
                     except:
-                        print("there is nothing we can do")
+                        pass#print("there is nothing we can do")
                 mc = []
                 rightclickjob = False
             if (
@@ -619,7 +627,7 @@ while running:
                 ).collidepoint(pygame.mouse.get_pos())
                 and rightclickjob
             ):
-                print("new project ")
+                #print("new project ")
                 mode = "d"
                 mc = []
                 SNAP = 15
@@ -627,6 +635,9 @@ while running:
                 hitboxes = []
                 images = []
                 decals = []
+                text = []
+                
+                zimagelayer = {}
                 linking = []
                 campos = [0, 0]
                 running = True
@@ -704,11 +715,16 @@ while running:
 
     if displaymode&0b00001==0:
         for i in zimagelayer: 
+            #print('eval start')
+            #print(zimagelayer)
+            #print(images)
+            
             for x in zimagelayer[i]:
                 try:
                     n=images[x]
                 except:
                     del x
+                #print(n)
                 screen.blit(
                     n["image"], [n["position"][0] - campos[0], n["position"][1] - campos[1]]
                 )
@@ -779,7 +795,7 @@ while running:
         kn = [scanx, scany, scanw, scanh]
         if mode == "hb":
             hitboxes.append(kn)
-            print(kn)
+            #print(kn)
         if mode == "lb":
             f = askopenfilename(title="Where does it link to?")
             string1 = __file__
@@ -791,11 +807,11 @@ while running:
                 string2.replace(string1[match.a : match.a + match.size], "")[:]
             )
             linking.append(kn + [s2])
-            print(linking)
+            #print(linking)
         if mode == "tb":
 
             triggers.append(kn + [0])
-            print(kn)
+            #print(kn)
 
         mc = []
     if len(mc) == 1:
