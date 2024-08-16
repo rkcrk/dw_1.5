@@ -1,5 +1,5 @@
 \_Standalone Guide Document
-# **Finding a debugger to find a bug in a Z layering code! (Line 479 in parser.py)
+# **Finding a debugger to find a bug in a Z layering code! (Line 479 in parser.py)**
 While deleting the image/decal from the memory and the level, the decal is STILL in the `zlayerimage`. In the current (& the meantime!) I an unable to figure this bug out.
 
 
