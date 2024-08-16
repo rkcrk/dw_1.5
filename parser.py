@@ -474,6 +474,12 @@ while running:
                         #print("goodbye tb")
                         break
 
+
+                print('----Z layer hierarcy---------------')
+                for i in zimagelayer:
+                    print('╓ Z:',i)
+                    for m in zimagelayer[i]:
+                        print("╟══ img idx:",m)
                 for nj in images:
                     rct = nj["image"].get_rect()
                     reeeeeeeeeeect = pygame.Rect(
@@ -485,11 +491,10 @@ while running:
                     #print(reeeeeeeeeeect)
 
                     if reeeeeeeeeeect.collidepoint(tp):
+                        
                         i=Mbox('Select the image you want to delete',f'Info about image:\n{reeeeeeeeeeect.__repr__()}\n{nj["name"]=}',48 +1)
-                        #print(i)
                         if i==1:
                             images.remove(nj)
-                            #print("goodbye img")
                             decals.remove(
                                 [
                                     reeeeeeeeeeect.x,
@@ -499,7 +504,7 @@ while running:
                                 ]
                             )
 
-                        #else:break
+                    
                 mc = []
                 # rightclickjob=False
             if (
@@ -562,6 +567,7 @@ while running:
                 try:zimagelayer[i].append(len(decals))
                 except:zimagelayer[i]=[len(decals)]
                 zimagelayer= dict(sorted(zimagelayer.items()))
+                #zimagelayer=dict(reversed(zimagelayer.items()))
                 #print(zimagelayer)
                 try:
                     s2 = string2.replace(string1[match.a : match.a + match.size], "")[1:]
@@ -573,7 +579,8 @@ while running:
                             255,
                         ]
                     )
-                    ImageInit(True)
+                    print(s2)
+                    ImageInit(False)
                 except:
                     decals.remove(
                         [
@@ -584,6 +591,7 @@ while running:
                         ]
                     )
                     s2 = string2.replace(string1[match.a : match.a + match.size], "")
+                    print(s2)
                     decals.append(
                         [
                             (campos[0] + rightclickjobpos[0]) // SNAP * SNAP,
@@ -721,17 +729,17 @@ while running:
             
             for x in zimagelayer[i]:
                 try:
-                    n=images[x]
+                    g=images[x]
                 except:
                     del x
                 #print(n)
                 screen.blit(
-                    n["image"], [n["position"][0] - campos[0], n["position"][1] - campos[1]]
+                    g["image"], [g["position"][0] - campos[0], g["position"][1] - campos[1]]
                 )
                 if displaymode&0b100000:
                     displaytext(
-                        f'IMAGE SRC: {n["name"]}',
-                        [(n["position"][0] - campos[0]), (n["position"][1] - campos[1]-FONT_SIZE)],
+                        f'IMAGE SRC: {g["name"]}',
+                        [(g["position"][0] - campos[0]), (g["position"][1] - campos[1]-FONT_SIZE)],
                         color=(127, 127, 127),
                     )
                     displaytext(
@@ -741,42 +749,42 @@ while running:
                     )
                     
     if displaymode&0b00010==0:
-        for n in hitboxes:
+        for u in hitboxes:
             draw_rect_alpha(
                 screen,
                 (128, 128, 128, 64),
-                [(n[0] - campos[0]), (n[1] - campos[1]), n[2], n[3]],
+                [(u[0] - campos[0]), (u[1] - campos[1]), u[2], u[3]],
             )
     if displaymode&0b00100==0:
-        for n in linking:
+        for u in linking:
             draw_rect_alpha(
                 screen,
                 (100, 100, 64, 64),
-                [(n[0] - campos[0]), (n[1] - campos[1]), n[2], n[3]],
+                [(u[0] - campos[0]), (u[1] - campos[1]), u[2], u[3]],
             )
             displaytext(
-                f"TELEPORTS TO {n[-1]}",
-                [(n[0] - campos[0]), (n[1] - campos[1])],
+                f"TELEPORTS TO {u[-1]}",
+                [(u[0] - campos[0]), (u[1] - campos[1])],
                 color=(0, 0, 0),
             )
     if displaymode&0b01000==0:
-        for n in text:
+        for u in text:
             displaytext(
-                n[-1], [(n[0] - campos[0]), (n[1] - campos[1])], color=(n[2], n[3], n[4])
+                u[-1], [(u[0] - campos[0]), (u[1] - campos[1])], color=(u[2], u[3], u[4])
             )
     if displaymode&0b10000==0:
-        for n in triggers:
+        for u in triggers:
             draw_rect_alpha(
                 screen,
                 (255, 255, 0, 64),
-                [(n[0] - campos[0]), (n[1] - campos[1]), n[2], n[3]],
+                [(u[0] - campos[0]), (u[1] - campos[1]), u[2], u[3]],
             )
             displaytext(
-                f"TRIGGER BOX", [(n[0] - campos[0]), (n[1] - campos[1])], color=(0, 0, 0)
+                f"TRIGGER BOX", [(u[0] - campos[0]), (u[1] - campos[1])], color=(0, 0, 0)
             )
             displaytext(
-                f"ID={n[-1]}",
-                [(n[0] - campos[0]), (n[1] + FONT_SIZE - campos[1])],
+                f"ID={u[-1]}",
+                [(u[0] - campos[0]), (u[1] + FONT_SIZE - campos[1])],
                 color=(0, 0, 0),
             )
 
