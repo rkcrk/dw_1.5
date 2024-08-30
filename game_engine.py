@@ -924,7 +924,8 @@ while (
                 if event.key == pygame.K_RIGHT:
                     holdingRight = False
                     holdingKeyRight = False
-            # FUCK YOU!!!!!! EDIT MAPS IN _STANDALONE
+            # F
+        
 
         cameraposition = [
             -debilcoords[0] + 320 - debilsize[0],
